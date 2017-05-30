@@ -1,0 +1,21 @@
+#!/bin/bash
+
+cat << _HEAD
+#!/bin/vbash
+
+source /opt/vyatta/etc/functions/script-template
+configure
+load /opt/vyatta/etc/config.boot.default 
+commit
+
+_HEAD
+
+/home/vyos/bin/run-command show configuration command | /bin/grep -v hw-id
+
+cat << _FOOTER
+delete system console device ttyS0 
+
+commit
+save
+
+_FOOTER

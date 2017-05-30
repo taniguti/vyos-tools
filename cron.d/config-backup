@@ -1,0 +1,1 @@
+0 * * * *  vyos /home/vyos/bin/config-backup > /home/vyos/config.out 2> /tmp/config.out.err
