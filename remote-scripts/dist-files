@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ -f ./etc/conf ];then
+    source ./etc/conf
+else
+    echo "Not found ./etc/conf"
+    exit 1
+fi
+
+for h in $routers
+do
+    echo $h
+    ssh -l vyos $h mkdir -p bin 
+    scp ../bin/* vyos@${h}:bin/
+    scp ../cron.d/config-backup vyos@${h}:/tmp/
+    ssh -l vyos $h sudo cp /tmp/config-backup  /etc/cron.d/config-backup
+done
