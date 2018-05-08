@@ -1,1 +1,2 @@
-0 * * * *  vyos /home/vyos/bin/config-backup > /home/vyos/bin/restore_config 2> /tmp/config-bakup.err
+0 * * * *  vyos mkdir -p /home/vyos/config_backups; /home/vyos/bin/config-backup > /home/vyos/config_backups/`date +\%Y\%m\%d-\%H\%M\%S` 2> /tmp/config-backup.err
+0 * * * *  vyos find     /home/vyos/config_backups -ctime +35 -exec rm -f {} \;
