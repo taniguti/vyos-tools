@@ -1,0 +1,35 @@
+#!/bin/sh
+
+myname=`basename $0`
+err_log="/tmp/${myname}_err.log"
+log="/tmp/${myname}.log"
+tempfile="/tmp/`uuidgen`"
+pathtome=`readlink $0`
+mydir=`dirname "$pathtome"`
+
+if [ -f "${mydir}/etc/conf" ]; then
+    source "${mydir}/etc/conf"
+else
+    echo "`date +%F-%T` config file not found" | tee -a $err_log
+    exit 1
+fi
+
+backupdir="$HOME/Documents/vyos-config-backups"
+mkdir -p "${backupdir}"
+if [ ! -d "${backupdir}" ]; then
+    echo "`date +%F-%T` backupdir: $backupdir not found" | tee -a $err_log
+    exit 1
+fi
+
+for vyos in $routers
+do
+    echo "`date +%F-%T` Get config from $vyos" | tee -a $log
+    ssh $vyos /home/vyos/bin/config-backup > $tempfile 2>> $err_log
+    if [ `cat "$tempfile" | wc -l` -ne 0 ]; then
+        echo "`date +%F-%T` Copy $tempfile to ${backupdir}/${vyos}.configure" | tee -a $log
+        cp "$tempfile" ${backupdir}/${vyos}.configure 2>> $err_log
+    else
+        echo "`date +%F-%T` $tempfile is empty" | tee -a $log
+    fi
+done
+rm "$tempfile"

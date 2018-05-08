@@ -1,0 +1,2 @@
+backupdir="$HOME/Documents/vyos-config-backups"
+routers="vrouter01 vrouter02 vrouter03"
