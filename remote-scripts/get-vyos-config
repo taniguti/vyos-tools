@@ -25,7 +25,7 @@ for vyos in $routers
 do
     echo "$( date +%F-%T) Get config from $vyos" | tee -a "$log"
     ssh "$vyos" /home/vyos/bin/config-backup > "$tempfile" 2>> "$err_log"
-    if [ "$( wc -l "$tempfile" )" -ne 0 ]; then
+    if [ "$( wc -l "$tempfile" | awk '{print $1}' )" -ne 0 ]; then
         echo "$( date +%F-%T) Copy $tempfile to ${backupdir}/${vyos}.configure" | tee -a "$log"
         cp "$tempfile" "${backupdir}/${vyos}.configure" 2>> "$err_log"
     else
